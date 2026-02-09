@@ -8,6 +8,10 @@ on:
   # Allow manual trigger
   workflow_dispatch:
 
+# Required permissions for the workflow
+permissions:
+  contents: write
+
 jobs:
   fetch-downloads:
     runs-on: ubuntu-latest
