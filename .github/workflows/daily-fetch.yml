@@ -33,11 +33,15 @@ jobs:
         run: |
           python fetch_downloads.py
 
+      - name: Generate plots
+        run: |
+          python plot_downloads.py
+
       - name: Commit and push if changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add downloads.csv
+          git add downloads.csv downloads_per_day.png downloads_per_day.html
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
