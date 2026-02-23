@@ -2,6 +2,12 @@
 
 Automatically tracks download counts for all models in the [vismatch](https://huggingface.co/vismatch) HuggingFace organization.
 
+## Downloads over time
+
+![Cumulative downloads per model](downloads_per_day.png)
+
+[Interactive plot](https://gmberton.github.io/vismatch-downloads-tracker/downloads_per_day.html)
+
 ## How it works
 
 - GitHub Actions runs daily at 00:00 UTC
@@ -14,6 +20,9 @@ Automatically tracks download counts for all models in the [vismatch](https://hu
 - `fetch_downloads.py` - Python script that fetches download counts
 - `.github/workflows/daily-fetch.yml` - GitHub Actions workflow (scheduled daily)
 - `downloads.csv` - Historical download data (automatically created)
+- `plot_downloads.py` - Generates static PNG and interactive HTML plots
+- `downloads_per_day.png` - Static cumulative downloads plot (auto-updated daily)
+- `downloads_per_day.html` - Interactive Plotly plot (auto-updated daily)
 - `requirements.txt` - Python dependencies
 
 ## CSV Format
