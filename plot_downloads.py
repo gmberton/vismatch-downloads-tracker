@@ -43,6 +43,7 @@ def style_for(name: str) -> dict:
 
 df = pd.read_csv("downloads.csv", parse_dates=["date"])
 df = df.groupby("date").last().sort_index()
+start_date = df.index[0].strftime("%b %d, %Y")
 df = df.subtract(df.iloc[0])
 
 # Rank models by final cumulative downloads (for annotation)
@@ -82,7 +83,7 @@ for col in top_models:
 
 ax.set_xlabel("Date")
 ax.set_ylabel("Cumulative Downloads")
-ax.set_title("Cumulative Downloads per Model (zeroed at start)")
+ax.set_title(f"Cumulative Downloads per Model (since {start_date})")
 ax.grid(True, linestyle="--", alpha=0.4)
 ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
 ax.xaxis.set_major_locator(mdates.DayLocator(interval=2))
@@ -119,7 +120,7 @@ for col in final.index:  # ordered by most downloads
     ))
 
 pfig.update_layout(
-    title="Cumulative Downloads per Model (zeroed at start)",
+    title=f"Cumulative Downloads per Model (since {start_date})",
     xaxis_title="Date",
     yaxis_title="Cumulative Downloads",
     hovermode="x unified",
