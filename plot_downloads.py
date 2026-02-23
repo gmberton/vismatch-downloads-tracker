@@ -75,23 +75,25 @@ for col in top_models:
         xy=(last_date, last_val),
         xytext=(8, 0),
         textcoords="offset points",
-        fontsize=6,
+        fontsize=9,
         fontweight="bold",
         color=style_for(col)["color"],
         va="center",
     )
 
-ax.set_xlabel("Date")
-ax.set_ylabel("Cumulative Downloads")
-ax.set_title(f"Cumulative Downloads per Model (since {start_date})")
+ax.set_xlabel("Date", fontsize=16)
+ax.set_ylabel("Cumulative Downloads", fontsize=16)
+ax.set_title(f"Cumulative Downloads per Model (since {start_date})", fontsize=18)
+ax.tick_params(axis="both", labelsize=13)
 ax.grid(True, linestyle="--", alpha=0.4)
 ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
 ax.xaxis.set_major_locator(mdates.DayLocator(interval=2))
 fig.autofmt_xdate(rotation=35)
 
 ax.legend(
-    bbox_to_anchor=(1.15, 1), loc="upper left",
-    fontsize=5.5, ncol=3, framealpha=0.9, columnspacing=1.0,
+    bbox_to_anchor=(1.15, 0), loc="lower left",
+    fontsize=9.5, ncol=2, framealpha=0.9, columnspacing=1.0,
+    borderaxespad=0,
 )
 plt.tight_layout()
 plt.savefig("downloads_per_day.png", dpi=150, bbox_inches="tight")
@@ -123,12 +125,31 @@ pfig.update_layout(
     title=f"Cumulative Downloads per Model (since {start_date})",
     xaxis_title="Date",
     yaxis_title="Cumulative Downloads",
-    hovermode="x unified",
+    hovermode="closest",
+    hoverdistance=20,
     template="plotly_white",
     legend=dict(font=dict(size=10)),
     width=1200, height=700,
 )
 pfig.update_xaxes(showgrid=True, gridwidth=1, gridcolor="lightgray")
 pfig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="lightgray")
-pfig.write_html("downloads_per_day.html")
+HOVER_JS = """
+var gd = document.getElementsByClassName('plotly-graph-div')[0];
+var numTraces = gd.data.length;
+var allIdx = [];
+for (var i = 0; i < numTraces; i++) allIdx.push(i);
+
+gd.on('plotly_hover', function(data) {
+    var idx = data.points[0].curveNumber;
+    var others = allIdx.filter(function(i) { return i !== idx; });
+    Plotly.restyle(gd, {'line.width': 1, 'opacity': 0.15}, others);
+    Plotly.restyle(gd, {'line.width': 5, 'opacity': 1}, [idx]);
+});
+
+gd.on('plotly_unhover', function() {
+    Plotly.restyle(gd, {'line.width': 2, 'opacity': 1}, allIdx);
+});
+"""
+pfig.write_html("downloads_per_day.html", post_script=HOVER_JS,
+                config={"displayModeBar": False})
 print("Saved downloads_per_day.html")
