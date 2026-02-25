@@ -129,11 +129,11 @@ pfig.update_layout(
     hoverdistance=20,
     template="plotly_white",
     legend=dict(font=dict(size=10)),
-    width=1200, height=700,
 )
 pfig.update_xaxes(showgrid=True, gridwidth=1, gridcolor="lightgray")
 pfig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="lightgray")
 HOVER_JS = """
+document.body.style.margin = '0';
 var gd = document.getElementsByClassName('plotly-graph-div')[0];
 var numTraces = gd.data.length;
 var allIdx = [];
@@ -151,5 +151,6 @@ gd.on('plotly_unhover', function() {
 });
 """
 pfig.write_html("downloads_per_day.html", post_script=HOVER_JS,
-                config={"displayModeBar": False})
+                config={"displayModeBar": False},
+                default_width='100%', default_height='100vh')
 print("Saved downloads_per_day.html")
