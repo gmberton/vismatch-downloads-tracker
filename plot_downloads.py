@@ -39,6 +39,88 @@ def style_for(name: str) -> dict:
     )
 
 
+# ── Pretty display names (paper-verified) ────────────────────────────
+
+PRETTY_NAMES = {
+    "affine-steerers": "Affine Steerers",
+    "aliked-lightglue": "ALIKED-LightGlue",
+    "aliked-lightglue-subpx": "ALIKED-LightGlue-SubPx",
+    "aspanformer": "ASpanFormer",
+    "d2net": "D2-Net",
+    "dedode": "DeDoDe",
+    "dedode-kornia": "DeDoDe-Kornia",
+    "dedode-lightglue": "DeDoDe-LightGlue",
+    "dedode-subpx": "DeDoDe-SubPx",
+    "disk-lightglue": "DISK-LightGlue",
+    "doghardnet-lightglue": "DoGHardNet-LightGlue",
+    "doghardnet-nn": "DoGHardNet-NN",
+    "duster": "DUSt3R",
+    "edm": "EDM",
+    "eloftr": "Efficient LoFTR",
+    "gim-dkm": "GIM-DKM",
+    "gim-lightglue": "GIM-LightGlue",
+    "liftfeat": "LiftFeat",
+    "lisrd": "LISRD",
+    "lisrd-aliked": "LISRD-ALIKED",
+    "lisrd-sift": "LISRD-SIFT",
+    "lisrd-superpoint": "LISRD-SuperPoint",
+    "loftr": "LoFTR",
+    "master": "MASt3R",
+    "matchanything-eloftr": "MatchAnything-Efficient LoFTR",
+    "matchanything-roma": "MatchAnything-RoMa",
+    "matchformer": "MatchFormer",
+    "minima": "MINIMA",
+    "minima-loftr": "MINIMA-LoFTR",
+    "minima-roma": "MINIMA-RoMa",
+    "minima-roma-tiny": "MINIMA-RoMa-Tiny",
+    "minima-superpoint-lightglue": "MINIMA-SuperPoint-LightGlue",
+    "minima-xoftr": "MINIMA-XoFTR",
+    "omniglue": "OmniGlue",
+    "orb-nn": "ORB-NN",
+    "patch2pix": "Patch2Pix",
+    "r2d2": "R2D2",
+    "rdd": "RDD",
+    "rdd-aliked": "RDD-ALIKED",
+    "rdd-lightglue": "RDD-LightGlue",
+    "rdd-star": "RDD*",
+    "ripe": "RIPE",
+    "roma": "RoMa",
+    "romav2": "RoMa-v2",
+    "se2loftr": "SE2-LoFTR",
+    "sift-lightglue": "SIFT-LightGlue",
+    "sift-nn": "SIFT-NN",
+    "sift-sphereglue": "SIFT-SphereGlue",
+    "silk": "SiLK",
+    "steerers": "Steerers",
+    "superglue": "SuperGlue",
+    "superpoint-lightglue": "SuperPoint-LightGlue",
+    "superpoint-lightglue-subpx": "SuperPoint-LightGlue-SubPx",
+    "superpoint-sphereglue": "SuperPoint-SphereGlue",
+    "tiny-roma": "Tiny RoMa",
+    "topicfm": "TopicFM",
+    "topicfm-plus": "TopicFM+",
+    "ufm": "UFM",
+    "xfeat": "XFeat",
+    "xfeat-lightglue": "XFeat-LightGlue",
+    "xfeat-lightglue-subpx": "XFeat-LightGlue-SubPx",
+    "xfeat-star": "XFeat*",
+    "xfeat-star-steerers-learned": "XFeat*-Steerers-Learned",
+    "xfeat-star-steerers-perm": "XFeat*-Steerers-Perm",
+    "xfeat-steerers-learned": "XFeat-Steerers-Learned",
+    "xfeat-steerers-perm": "XFeat-Steerers-Perm",
+    "xfeat-subpx": "XFeat-SubPx",
+    "xoftr": "XoFTR",
+    "zippypoint": "ZippyPoint",
+}
+
+
+def pretty_name(raw: str) -> str:
+    """Return display name for a model, falling back to title-cased segments."""
+    if raw in PRETTY_NAMES:
+        return PRETTY_NAMES[raw]
+    return "-".join(seg.title() for seg in raw.split("-"))
+
+
 # ── Load and prepare data ──────────────────────────────────────────────
 
 df = pd.read_csv("downloads.csv", parse_dates=["date"])
@@ -63,7 +145,7 @@ for col in df.columns:
         linestyle=s["linestyle"],
         markersize=3,
         linewidth=1.4,
-        label=col,
+        label=pretty_name(col),
     )
 
 # Annotate top N at the end of their lines
@@ -71,7 +153,7 @@ for col in top_models:
     last_date = df.index[-1]
     last_val = df[col].iloc[-1]
     ax.annotate(
-        col,
+        pretty_name(col),
         xy=(last_date, last_val),
         xytext=(8, 0),
         textcoords="offset points",
@@ -114,11 +196,11 @@ for col in final.index:  # ordered by most downloads
     s = style_for(col)
     pfig.add_trace(go.Scatter(
         x=df.index, y=df[col],
-        name=col,
+        name=pretty_name(col),
         mode="lines+markers",
         line=dict(color=s["color"], dash=PLOTLY_DASH.get(s["linestyle"], "solid"), width=2),
         marker=dict(symbol=PLOTLY_MARKER.get(s["marker"], "circle"), size=5),
-        hovertemplate=f"<b>{col}</b><br>%{{x|%b %d}}<br>Downloads: %{{y}}<extra></extra>",
+        hovertemplate=f"<b>{pretty_name(col)}</b><br>%{{x|%b %d}}<br>Downloads: %{{y}}<extra></extra>",
     ))
 
 pfig.update_layout(
