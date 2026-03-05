@@ -37,11 +37,15 @@ jobs:
         run: |
           python plot_downloads.py
 
+      - name: Generate badge
+        run: |
+          python generate_badge.py
+
       - name: Commit and push if changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add downloads.csv downloads_per_day.png downloads_per_day.html
+          git add downloads.csv downloads_per_day.png downloads_per_day.html badge.json
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
