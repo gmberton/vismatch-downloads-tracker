@@ -16,7 +16,7 @@ def fetch_download_counts():
 
     print("Fetching models from vismatch organization...")
     try:
-        models = list(api.list_models(author="vismatch"))
+        models = list(api.list_models(author="vismatch", expand=["downloadsAllTime"]))
     except Exception as e:
         print(f"Error fetching models: {e}")
         sys.exit(1)
@@ -25,13 +25,13 @@ def fetch_download_counts():
         print("No models found in vismatch organization")
         sys.exit(1)
 
-    # Extract model names and download counts
+    # Extract model names and all-time download counts
     model_data = {}
     for model in models:
         model_name = model.id.replace("vismatch/", "")
-        downloads = model.downloads if hasattr(model, 'downloads') else 0
+        downloads = getattr(model, 'downloads_all_time', None) or getattr(model, 'downloads', 0) or 0
         model_data[model_name] = downloads
-        print(f"  {model_name}: {downloads:,} downloads")
+        print(f"  {model_name}: {downloads:,} downloads (all-time)")
 
     return model_data
 
