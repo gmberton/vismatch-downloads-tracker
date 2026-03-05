@@ -1,7 +1,7 @@
-"""Generate a shields.io endpoint badge JSON with total monthly HF downloads.
+"""Generate a shields.io endpoint badge JSON with total all-time HF downloads.
 
-Reads downloads.csv where each value is already the HuggingFace 30-day rolling
-download count per model. Sums the latest row across all models.
+Reads downloads.csv where each value is the all-time download count per model.
+Sums the latest row across all models.
 """
 
 import json
@@ -23,7 +23,7 @@ total = int(df.iloc[-1].sum())
 
 badge = {
     "schemaVersion": 1,
-    "label": "HF downloads/month",
+    "label": "HF downloads",
     "message": format_count(total),
     "color": "blue",
 }
@@ -31,4 +31,4 @@ badge = {
 with open("badge.json", "w") as f:
     json.dump(badge, f, indent=2)
 
-print(f"Badge: {total} downloads/month -> {format_count(total)}")
+print(f"Badge: {total} downloads -> {format_count(total)}")
